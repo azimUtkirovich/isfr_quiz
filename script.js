@@ -1,6 +1,7 @@
 let questions = []; // Массив изначально пуст
 
 const questionElement = document.getElementById("question");
+const standartElement = document.getElementById("standard");
 const answerButtons = document.getElementById("answer-buttons");
 const nextButton = document.getElementById("next-btn");
 
@@ -8,43 +9,40 @@ let currentQuestionIndex = 0;
 let score = 0;
 
 async function loadQuestions() {
-    try {
-        // 1. Указываем список всех ваших файлов
-        const files = [
-            'questions-experement.json', 
-            'questions-social.json', 
-            'questions-talim.json', 
-            'questions-umumiy.json'
-        ];
+  try {
+    // 1. Указываем список всех ваших файлов
+    const files = ["questions-ifrs.json"];
 
-        // 2. Запускаем загрузку всех файлов одновременно
-        const requests = files.map(file => fetch(file).then(res => {
-            if (!res.ok) throw new Error(`Ошибка в файле ${file}`);
-            return res.json();
-        }));
+    // 2. Запускаем загрузку всех файлов одновременно
+    const requests = files.map((file) =>
+      fetch(file).then((res) => {
+        if (!res.ok) throw new Error(`Ошибка в файле ${file}`);
+        return res.json();
+      }),
+    );
 
-        // 3. Ждем завершения всех запросов
-        const allResults = await Promise.all(requests);
+    // 3. Ждем завершения всех запросов
+    const allResults = await Promise.all(requests);
 
-        // 4. Соединяем все массивы в один большой (flat объединяет подмассивы)
-        const allQuestions = allResults.flat();
+    // 4. Соединяем все массивы в один большой (flat объединяет подмассивы)
+    const allQuestions = allResults.flat();
 
-        // 5. Перемешиваем общий список и берем 30 штук
-        allQuestions.sort(() => Math.random() - 0.5);
-        questions = allQuestions.slice(0, 30);
+    // 5. Перемешиваем общий список и берем 30 штук
+    allQuestions.sort(() => Math.random() - 0.5);
+    questions = allQuestions.slice(0, 30);
 
-        startQuiz(); 
-    } catch (error) {
-        console.error("Ошибка загрузки:", error);
-        questionElement.innerHTML = "Ошибка загрузки файлов JSON. Проверьте названия файлов.";
-    }
+    startQuiz();
+  } catch (error) {
+    console.error("Детали ошибки:", error);
+    questionElement.innerHTML = `Ошибка: ${error.message}`;
+  }
 }
 
 
 function startQuiz() {
   currentQuestionIndex = 0;
   score = 0;
-  nextButton.innerHTML = "Кейинги савол";
+  nextButton.innerHTML = "След. вопрос";
   showQuestion();
 }
 
@@ -53,6 +51,13 @@ function showQuestion() {
   let currentQuestion = questions[currentQuestionIndex];
   let questionNo = currentQuestionIndex + 1;
   questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
+  standartElement.innerHTML = currentQuestionIndex.standart;
+  
+  if (currentQuestion.standard) {
+      standartElement.innerHTML = `Источник: ${currentQuestion.standard}`;
+  } else {
+      standartElement.innerHTML = "";
+  }
 
   const shuffledAnswers = [...currentQuestion.answers].sort(
     () => Math.random() - 0.5,
@@ -97,8 +102,8 @@ function selectAnswer(e) {
 
 function showScore() {
   resetState();
-  questionElement.innerHTML = `${questions.length} саволдан ${score} тугри белгиланди`;
-  nextButton.innerHTML = "Тестни бошлаш";
+  questionElement.innerHTML = `Из ${questions.length} вопросов ${score} верные`;
+  nextButton.innerHTML = "Начать тест";
   nextButton.style.display = "block";
 }
 
