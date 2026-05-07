@@ -29,7 +29,7 @@ async function loadQuestions() {
 
     // 5. Перемешиваем общий список и берем 30 штук
     allQuestions.sort(() => Math.random() - 0.5);
-    questions = allQuestions.slice(0, 30);
+    questions = allQuestions.slice(0, 10);
 
     startQuiz();
   } catch (error) {
@@ -37,7 +37,6 @@ async function loadQuestions() {
     questionElement.innerHTML = `Ошибка: ${error.message}`;
   }
 }
-
 
 function startQuiz() {
   currentQuestionIndex = 0;
@@ -100,9 +99,21 @@ function selectAnswer(e) {
   nextButton.style.display = "block";
 }
 
+function showMark(score, total) {
+  const percent = (score / total) * 100;
+
+  if (percent < 50) {
+    return "Плохо, попробуй ещё.";
+  } else if (percent < 85){
+    return "Хорошо, но нужно ещё постараться.";
+  }
+  return "Отлично! Так держать!";
+}
+
 function showScore() {
   resetState();
   questionElement.innerHTML = `Из ${questions.length} вопросов ${score} верные`;
+  standartElement.innerHTML = showMark(score, questions.length); 
   nextButton.innerHTML = "Начать тест";
   nextButton.style.display = "block";
 }
