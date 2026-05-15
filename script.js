@@ -11,7 +11,7 @@ let score = 0;
 async function loadQuestions() {
   try {
     // 1. Указываем список всех ваших файлов
-    const files = ["questions-ifrs.json"];
+    const files = ["questions-ifrs2.json"];
 
     // 2. Запускаем загрузку всех файлов одновременно
     const requests = files.map((file) =>
@@ -29,7 +29,7 @@ async function loadQuestions() {
 
     // 5. Перемешиваем общий список и берем 30 штук
     allQuestions.sort(() => Math.random() - 0.5);
-    questions = allQuestions.slice(0, 10);
+    questions = allQuestions.slice(0, 30);
 
     startQuiz();
   } catch (error) {
